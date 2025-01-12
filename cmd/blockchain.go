@@ -23,10 +23,3 @@ var (
 		Run:   handlers.Blockchain.Info,
 	}
 )
-
-func init() {
-	Root.AddCommand(Blockchain)
-
-	// Subcommands
-	Blockchain.AddCommand(BlockchainInfo)
-}
