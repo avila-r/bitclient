@@ -10,7 +10,7 @@ version = "0.0.1"
 repository = "https://github.com/avila-r/bitclient"
 
 [advanced]
-debug = true
+debug = false
 
 [commands]
 
@@ -27,3 +27,12 @@ long = "The 'blockchain' command allows interaction with the blockchain, includi
 use = "info"
 short = "Get information about the blockchain"
 long = "The 'info' subcommand retrieves detailed information about the blockchain, such as the current block height, best block hash, chain status, and other relevant blockchain data."
+
+[commands.blocks]
+use = "blocks"
+short = "Interact with Bitcoin blocks"
+long = "The 'blocks' command provides tools to interact with individual blocks in the blockchain. You can retrieve block information, validate blocks, and set verbosity levels for block data."
+[commands.blocks.get]
+use = "get [blockhash]"
+short = "Retrieve information about a specific block"
+long = "The 'get' subcommand retrieves detailed information about a specific block in the blockchain. You must provide the block hash to use this command. Verbosity levels can be set to control the granularity of the block data returned."
