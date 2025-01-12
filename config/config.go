@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 
@@ -10,11 +11,7 @@ import (
 )
 
 type Properties struct {
-	Main struct {
-		Command          string `toml:"command"`
-		ShortDescription string `toml:"short"`
-		LongDescription  string `toml:"long"`
-	} `toml:"main"`
+	Main command `toml:"main"`
 
 	Info struct {
 		License    string `toml:"license"`
@@ -26,67 +23,59 @@ type Properties struct {
 	Advanced struct {
 		Debug bool `toml:"debug"`
 	} `toml:"advanced"`
+
+	Commands struct {
+		Config command `toml:"config"`
+
+		Blockchain struct {
+			command
+			Info command `toml:"info"`
+		} `toml:"blockchain"`
+	} `toml:"commands"`
 }
 
-var (
-	config = func() *Properties {
-		cfg := Properties{}
+type command struct {
+	Use              string `toml:"use"`
+	ShortDescription string `toml:"short"`
+	LongDescription  string `toml:"long"`
+}
 
-		dir, err := os.Getwd()
-		if err != nil {
-			log.Fatalf("failed to get current working directory: %v", err)
-		}
+var config = func() *Properties {
+	cfg := Properties{}
 
-		path := filepath.Join(dir, "config.toml")
-		if _, err := os.Stat(path); err != nil {
-			log.Fatalf("config file not found at %s.", path)
-		}
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("failed to get current working directory: %v", err)
+	}
 
-		file, err := os.ReadFile(path)
-		if err != nil {
-			log.Fatalf("failed to read config.toml: %v", err)
-		}
+	path := filepath.Join(dir, "config.toml")
+	if _, err := os.Stat(path); err != nil {
+		log.Fatalf("config file not found at %s.", path)
+	}
 
-		if err := toml.Unmarshal(file, &cfg); err != nil {
-			log.Fatalf("failed to parse config.toml: %v", err)
-		}
-		return &cfg
-	}()
-)
+	file, err := os.ReadFile(path)
+	if err != nil {
+		log.Fatalf("failed to read config.toml: %v", err)
+	}
+
+	if err := toml.Unmarshal(file, &cfg); err != nil {
+		log.Fatalf("failed to parse config.toml: %v", err)
+	}
+	return &cfg
+}()
 
 func Get() *Properties {
 	return config
 }
 
 func (p *Properties) ToString() string {
-	return fmt.Sprintf(`
-  [Main]:
-    Command: %s
-    Short Description: %s
-    Long Description: %s
-	
-  [Info]:
-    License: %s
-    Author: %s
-    Version: %s
-    Repository: %s
-
-  [Advanced]:
-    Debug: %v`,
-
-		p.Main.Command,
-		p.Main.ShortDescription,
-		p.Main.LongDescription,
-
-		p.Info.License,
-		p.Info.Author,
-		p.Info.Version,
-		p.Info.Repository,
-
-		p.Advanced.Debug,
-	)
+	bytes, err := toml.Marshal(p)
+	if err != nil {
+		slog.Debug("failed to marshal properties into .toml file", "error", err)
+	}
+	return string(bytes)
 }
 
 func (p *Properties) Log() {
-	log.Printf("Loaded configuration:\n%s", p.ToString())
+	fmt.Print(p.ToString())
 }
