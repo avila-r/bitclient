@@ -14,7 +14,7 @@ import (
 	"github.com/avila-r/bitclient/logger"
 )
 
-type Client struct {
+type RPCClient struct {
 	URL            string
 	Authentication Authentication
 	client         *http.Client
@@ -35,27 +35,29 @@ type Response struct {
 
 type Json map[string]interface{}
 
-func (j Json) ToString() string {
-	data, err := json.MarshalIndent(j, "", "  ")
-	if err != nil {
-		logger.Debugf("Failed to serialize json as string: %v", err)
-	}
-
-	return string(data)
-}
-
 var (
-	DefaultClient = &Client{
-		client: &http.Client{},
-		URL:    env.Get("RPC_URL"),
-		Authentication: Authentication{
-			Type:  AuthenticationType(env.Get("RPC_AUTH_TYPE")),
-			Label: env.Get("RPC_AUTH_LABEL"),
-		},
-	}
+	Client = func() *RPCClient {
+		rpcURL := env.Get("RPC_URL")
+		rpcAuthType := env.Get("RPC_AUTH_TYPE")
+		rpcAuthLabel := env.Get("RPC_AUTH_LABEL")
+
+		if rpcURL == "" || rpcAuthType == "" || rpcAuthLabel == "" {
+			logger.Warnf("unable to initialize a default rpc.Client (RPC_URL, RPC_AUTH_TYPE and RPC_AUTH_LABEL must be provided)")
+			return nil
+		}
+
+		return &RPCClient{
+			client: &http.Client{},
+			URL:    rpcURL,
+			Authentication: Authentication{
+				Type:  AuthenticationType(rpcAuthType),
+				Label: rpcAuthLabel,
+			},
+		}
+	}()
 )
 
-func New(uri string, authentication Authentication) (*Client, error) {
+func New(uri string, authentication Authentication) (*RPCClient, error) {
 	// Validate URL
 	if uri == "" {
 		return nil, errs.Of("URL cannot be empty")
@@ -70,14 +72,14 @@ func New(uri string, authentication Authentication) (*Client, error) {
 		return nil, err
 	}
 
-	return &Client{
+	return &RPCClient{
 		URL:            uri,
 		Authentication: authentication,
 		client:         &http.Client{},
 	}, nil
 }
 
-func (c *Client) Do(request Request) (*Json, error) {
+func (c *RPCClient) Do(request Request) (*Json, error) {
 	// Serialize the request to JSON
 	body, err := json.Marshal(request)
 	if err != nil {
