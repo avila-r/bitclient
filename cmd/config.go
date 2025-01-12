@@ -14,7 +14,3 @@ var Config = &cobra.Command{
 		config.Get().Log()
 	},
 }
-
-func init() {
-	Root.AddCommand(Config)
-}
