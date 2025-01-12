@@ -31,6 +31,11 @@ type Properties struct {
 			command
 			Info command `toml:"info"`
 		} `toml:"blockchain"`
+
+		Blocks struct {
+			command
+			Get command `toml:"get"`
+		} `toml:"blocks"`
 	} `toml:"commands"`
 }
 
