@@ -23,3 +23,11 @@ var (
 		Run:   handlers.Blockchain.Info,
 	}
 )
+
+func init() {
+	Root.AddCommand(Blockchain) // bitclient blockchain
+	{
+		// Subcommands
+		Blockchain.AddCommand(BlockchainInfo) // bitclient blockchain info
+	}
+}
