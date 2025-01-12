@@ -35,6 +35,15 @@ type Response struct {
 
 type Json map[string]interface{}
 
+func (j Json) ToString() string {
+	data, err := json.MarshalIndent(j, "", "  ")
+	if err != nil {
+		logger.Debugf("Failed to serialize json as string: %v", err)
+	}
+
+	return string(data)
+}
+
 var (
 	Client = func() *RPCClient {
 		rpcURL := env.Get("RPC_URL")
