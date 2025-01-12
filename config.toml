@@ -1,5 +1,5 @@
 [main]
-command = "bitclient"
+use = "bitclient"
 short = "A Go-based CLI JSON-RPC client for interacting with a Bitcoin Core daemon."
 long = "Bitclient is a command-line interface (CLI) written in Go, designed for interacting with a Bitcoin Core daemon through JSON-RPC. It can connect to either a local full node or a remote Bitcoin node, allowing users to perform Bitcoin-related operations, such as querying blockchain data, creating transactions, and managing their node via RPC calls. This tool provides an alternative to bitcoin-cli, offering a more user-friendly and scriptable CLI interface for Bitcoin Core."
 
@@ -11,3 +11,19 @@ repository = "https://github.com/avila-r/bitclient"
 
 [advanced]
 debug = true
+
+[commands]
+
+[commands.config]
+use = "config"
+short = "Print configuration details"
+long = "The 'config' command displays the current configuration details loaded from the config.toml file."
+
+[commands.blockchain]
+use = "blockchain"
+short = "Interact with the blockchain"
+long = "The 'blockchain' command allows interaction with the blockchain, including retrieving information and performing actions like checking blockchain status."
+[commands.blockchain.info]
+use = "info"
+short = "Get information about the blockchain"
+long = "The 'info' subcommand retrieves detailed information about the blockchain, such as the current block height, best block hash, chain status, and other relevant blockchain data."
