@@ -7,9 +7,9 @@ import (
 )
 
 var Config = &cobra.Command{
-	Use:   "config",
-	Short: "Print configuration details",
-	Long:  "Displays the current configuration details loaded from the config.toml file.",
+	Use:   config.Get().Commands.Config.Use,
+	Short: config.Get().Commands.Config.ShortDescription,
+	Long:  config.Get().Commands.Config.LongDescription,
 	Run: func(_ *cobra.Command, _ []string) {
 		config.Get().Log()
 	},
