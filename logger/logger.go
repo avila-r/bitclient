@@ -11,9 +11,13 @@ import (
 )
 
 var (
-	logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Ltime|log.Lmsgprefix)
+	debugger = log.New(os.Stdout, "[bitclient]", log.Ldate|log.Ltime|log.Lmsgprefix|log.Llongfile)
+	logger   = log.New(os.Stdout, "[bitclient]", log.Ldate|log.Ltime|log.Lmsgprefix)
+	printer  = log.New(os.Stdout, "", 0)
+
 	yellow = color.New(color.FgYellow).SprintFunc()
 	red    = color.New(color.FgRed).SprintFunc()
+	cyan   = color.New(color.FgCyan).SprintFunc()
 )
 
 func Info(v ...any) {
@@ -44,6 +48,30 @@ func Warn(v ...any) {
 func Warnf(format string, v ...any) {
 	logger.SetPrefix(yellow("[WARN] "))
 	logger.Printf(format, v...)
+}
+
+func Debug(v ...any) {
+	if !config.Get().Advanced.Debug {
+		return // Do nothing if debug is false
+	}
+	debugger.SetPrefix(cyan("[DEBUG] "))
+	debugger.Print(v...)
+}
+
+func Debugf(format string, v ...any) {
+	if !config.Get().Advanced.Debug {
+		return // Do nothing if debug is false
+	}
+	debugger.SetPrefix(cyan("[DEBUG] "))
+	debugger.Printf(format, v...)
+}
+
+func Print(v ...any) {
+	printer.Print(v...)
+}
+
+func Printf(format string, v ...any) {
+	printer.Printf(format, v...)
 }
 
 func init() {
