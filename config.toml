@@ -1,0 +1,13 @@
+[main]
+command = "bitclient"
+short = "A Go-based CLI JSON-RPC client for interacting with a Bitcoin Core daemon."
+long = "Bitclient is a command-line interface (CLI) written in Go, designed for interacting with a Bitcoin Core daemon through JSON-RPC. It can connect to either a local full node or a remote Bitcoin node, allowing users to perform Bitcoin-related operations, such as querying blockchain data, creating transactions, and managing their node via RPC calls. This tool provides an alternative to bitcoin-cli, offering a more user-friendly and scriptable CLI interface for Bitcoin Core."
+
+[info]
+license = "MIT"
+author = "R. Ávila"
+version = "0.0.1"
+repository = "https://github.com/avila-r/bitclient"
+
+[advanced]
+debug = true
