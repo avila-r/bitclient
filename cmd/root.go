@@ -5,12 +5,15 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/avila-r/bitclient/config"
 	"github.com/avila-r/bitclient/handlers"
 )
 
 var Root = &cobra.Command{
-	Use: "bitclient",
-	Run: handlers.Root,
+	Use:   config.Get().Main.Use,
+	Short: config.Get().Main.ShortDescription,
+	Long:  config.Get().Main.LongDescription,
+	Run:   handlers.Root,
 }
 
 func Execute() {
