@@ -68,5 +68,5 @@ func (b *blocksHandler) Get(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	logger.Print(response.ToString())
+	response.PrintResult()
 }
