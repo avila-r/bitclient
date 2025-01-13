@@ -23,7 +23,7 @@ var Root = func(cmd *cobra.Command, args []string) {
 
 	form := huh.NewForm(huh.NewGroup(
 		huh.NewSelect[string]().
-			Title("Choose your burger").
+			Title("Choose an option").
 			Options(
 				huh.NewOption("See current configuration", "config"),
 			).
