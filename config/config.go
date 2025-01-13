@@ -48,12 +48,7 @@ type command struct {
 var config = func() *Properties {
 	cfg := Properties{}
 
-	dir, err := os.Getwd()
-	if err != nil {
-		log.Fatalf("failed to get current working directory: %v", err)
-	}
-
-	path := filepath.Join(dir, "config.toml")
+	path := filepath.Join(RootPath, "config.toml")
 	if _, err := os.Stat(path); err != nil {
 		log.Fatalf("config file not found at %s.", path)
 	}
