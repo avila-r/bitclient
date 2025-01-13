@@ -7,20 +7,20 @@ import (
 	"github.com/avila-r/bitclient/rpc"
 )
 
-type ResponseVerbosity int
+type BlockInfoVerbosity int
 
 const (
-	VerbositySerializedHexData ResponseVerbosity = iota
+	VerbositySerializedHexData BlockInfoVerbosity = iota
 	VerbosityBasicBlockInfo
 	VerbosityDetailedBlockInfo
 	VerbosityFullBlockInfoWithPrevout
 )
 
-func VerbosityFrom(i int) (ResponseVerbosity, error) {
+func VerbosityFrom(i int) (BlockInfoVerbosity, error) {
 	if i < int(VerbositySerializedHexData) || i > int(VerbosityFullBlockInfoWithPrevout) {
 		return 0, errs.Of("invalid verbosity level (%d), valid range is 0-3", i)
 	}
-	return ResponseVerbosity(i), nil
+	return BlockInfoVerbosity(i), nil
 }
 
 func GetBlock(blockhash string, verbosity int) (*rpc.Response, error) {
@@ -36,7 +36,7 @@ func GetBlock(blockhash string, verbosity int) (*rpc.Response, error) {
 	request := rpc.Request{
 		ID:      rpc.Identifier,
 		Version: rpc.Version2,
-		Method:  rpc.MethodGetBlock,
+		Method:  MethodGetBlock,
 		Params:  rpc.Params{blockhash, verbosity},
 	}
 
