@@ -12,5 +12,5 @@ func GetBlockchainInfo() (*rpc.Json, error) {
 		Params:  rpc.NoParams,
 	}
 
-	return Result(rpc.Client.Do(request))
+	return rpc.JsonResult(rpc.Client.Do(request))
 }
