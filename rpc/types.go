@@ -18,9 +18,6 @@ const (
 	ContentTypeHeaderLabel   = "Content-Type"
 	AuthorizationHeaderLabel = "Authorization"
 
-	MethodGetBlock          Method = "getblock"
-	MethodGetBlockchainInfo Method = "getblockchaininfo"
-
 	ContentTypeApplicationJson Header = "application/json"
 )
 
