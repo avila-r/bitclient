@@ -33,36 +33,7 @@ type Response struct {
 	Result json.RawMessage `json:"result"`
 }
 
-func (r *Response) PrintResult() {
-	json, err := r.UnmarshalResult()
-	if err != nil {
-		// Print raw result
-		logger.Print(r.Result)
-		return
-	}
-	logger.Print(json.ToString())
-}
-
-func (r *Response) UnmarshalResult() (*Json, error) {
-	result := Json{}
-	if err := json.Unmarshal(r.Result, &result); err != nil {
-		logger.Debugf("Error processing result: %v", err)
-		return nil, errs.Of("failed to process result: %v", err.Error())
-	}
-
-	return &result, nil
-}
-
 type Json map[string]interface{}
-
-func (j Json) ToString() string {
-	data, err := json.MarshalIndent(j, "", "  ")
-	if err != nil {
-		logger.Debugf("Failed to serialize json as string: %v", err)
-	}
-
-	return string(data)
-}
 
 var (
 	Client = func() *RPCClient {
