@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"log"
 	"log/slog"
 	"os"
@@ -53,7 +54,7 @@ func Debug(v ...any) {
 	if !config.Get().Advanced.Debug {
 		return // Do nothing if debug is false
 	}
-	logger.SetPrefix(cyan("[DEBUG] "))
+	logger.SetPrefix(fmt.Sprintf("%s %s", caller(), cyan("[DEBUG] ")))
 	logger.Print(v...)
 }
 
@@ -61,7 +62,7 @@ func Debugf(format string, v ...any) {
 	if !config.Get().Advanced.Debug {
 		return // Do nothing if debug is false
 	}
-	logger.SetPrefix(cyan("[DEBUG] "))
+	logger.SetPrefix(fmt.Sprintf("%s %s", caller(), cyan("[DEBUG] ")))
 	logger.Printf(format, v...)
 }
 
