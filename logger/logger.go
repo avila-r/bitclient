@@ -40,6 +40,18 @@ func Errorf(format string, v ...any) {
 	logger.Printf(format, v...)
 }
 
+func Fatal(v ...any) {
+	logger.SetPrefix(red("[ERROR] "))
+	logger.Print(v...)
+	os.Exit(1)
+}
+
+func Fatalf(format string, v ...any) {
+	logger.SetPrefix(red("[ERROR] "))
+	logger.Printf(format, v...)
+	os.Exit(1)
+}
+
 func Warn(v ...any) {
 	logger.SetPrefix(yellow("[WARN] "))
 	logger.Print(v...)

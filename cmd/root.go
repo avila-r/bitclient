@@ -1,11 +1,10 @@
 package cmd
 
 import (
-	"log"
-
 	"github.com/spf13/cobra"
 
 	"github.com/avila-r/bitclient/config"
+	"github.com/avila-r/bitclient/logger"
 	// "github.com/avila-r/bitclient/handlers"
 )
 
@@ -19,6 +18,6 @@ var Root = &cobra.Command{
 
 func Execute() {
 	if err := Root.Execute(); err != nil {
-		log.Fatalf("failed to run bitclient cmd: %v", err.Error())
+		logger.Fatalf("failed to run bitclient cmd: %v", err.Error())
 	}
 }
