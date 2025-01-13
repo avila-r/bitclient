@@ -37,7 +37,7 @@ func (j Json) ToString() string {
 	return string(data)
 }
 
-func JsonResult(r *Response, err error) (*Json, error) {
+func JsonResult(r *Response, err error, warning ...string) (*Json, error) {
 	if r != nil {
 		return r.UnmarshalResult()
 	}
@@ -95,7 +95,14 @@ func JsonResult(r *Response, err error) (*Json, error) {
 	}
 
 	if message, exists := stringToMap(err.Error())["message"]; exists {
-		return nil, errs.Of("%v", strings.ToLower(message))
+		var err error
+		if len(warning) > 0 {
+			err = errs.Of("%s (%s)", strings.ToLower(message), warning[0])
+		} else {
+			err = errs.Of("%v", strings.ToLower(message))
+		}
+
+		return nil, err
 	}
 
 	return nil, err
