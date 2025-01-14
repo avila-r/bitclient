@@ -78,10 +78,10 @@ func ArrayResult(r *Response, err error, warning ...string) (*Array, error) {
 		return r.UnmarshalArray()
 	}
 
-	return handle[Array](r, err, warning...)
+	return handle[Array](err, warning...)
 }
 
-func handle[T any](r *Response, err error, warning ...string) (*T, error) {
+func handle[T any](err error, warning ...string) (*T, error) {
 	if !strings.HasPrefix(err.Error(), "map") {
 		return nil, err
 	}
