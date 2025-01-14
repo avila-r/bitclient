@@ -70,7 +70,7 @@ func JsonResult(r *Response, err error, warning ...string) (*Json, error) {
 		return r.UnmarshalResult()
 	}
 
-	return handle[Json](r, err, warning...)
+	return handle[Json](err, warning...)
 }
 
 func ArrayResult(r *Response, err error, warning ...string) (*Array, error) {
