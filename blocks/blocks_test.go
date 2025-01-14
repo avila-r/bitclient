@@ -58,6 +58,12 @@ func Test_GetBestBlockhash(t *testing.T) {
 	}
 }
 
+func Test_GetChainTips(t *testing.T) {
+	if _, err := blocks.GetChainTips(); err != nil {
+		t.Errorf("Failed to get chain tips: %v", err)
+	}
+}
+
 func Test_GetBlock(t *testing.T) {
 	tests := []struct {
 		Verbosity     int
