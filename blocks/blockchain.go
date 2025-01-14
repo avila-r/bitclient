@@ -36,3 +36,14 @@ func GetBestBlockHash() (*rpc.Response, error) {
 
 	return rpc.Client.Do(request)
 }
+
+func GetChainTips() (*rpc.Array, error) {
+	request := rpc.Request{
+		ID:      rpc.Identifier,
+		Version: rpc.Version2,
+		Method:  MethodGetChainTips,
+		Params:  rpc.NoParams,
+	}
+
+	return rpc.ArrayResult(rpc.Client.Do(request))
+}

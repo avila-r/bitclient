@@ -11,4 +11,5 @@ const (
 	MethodGetBlockHash      rpc.Method = "getblockhash"
 	MethodGetBlockHeader    rpc.Method = "getblockheader"
 	MethodGetBlockStats     rpc.Method = "getblockstats"
+	MethodGetChainTips      rpc.Method = "getchaintips"
 )
