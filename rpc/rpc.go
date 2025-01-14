@@ -33,8 +33,6 @@ type Response struct {
 	Result json.RawMessage `json:"result"`
 }
 
-type Json map[string]interface{}
-
 var (
 	Client = func() *RPCClient {
 		rpcURL := env.Get("RPC_URL")

@@ -8,11 +8,20 @@ import (
 	"github.com/avila-r/bitclient/logger"
 )
 
+type Json map[string]interface{}
+
+type Array []Json
+
 func (r *Response) PrintResult() {
 	json, err := r.UnmarshalResult()
 	if err != nil {
-		// Print raw result
-		logger.Print(r.Result)
+		arr, err := r.UnmarshalArray()
+		if err != nil {
+			// Print raw result
+			logger.Print(r.Result)
+			return
+		}
+		logger.Print(arr.ToString())
 		return
 	}
 	logger.Print(json.ToString())
@@ -20,6 +29,16 @@ func (r *Response) PrintResult() {
 
 func (r *Response) UnmarshalResult() (*Json, error) {
 	result := Json{}
+	if err := json.Unmarshal(r.Result, &result); err != nil {
+		logger.Debugf("Error processing result: %v", err)
+		return nil, errs.Of("failed to process result: %v", err.Error())
+	}
+
+	return &result, nil
+}
+
+func (r *Response) UnmarshalArray() (*Array, error) {
+	result := Array{}
 	if err := json.Unmarshal(r.Result, &result); err != nil {
 		logger.Debugf("Error processing result: %v", err)
 		return nil, errs.Of("failed to process result: %v", err.Error())
@@ -37,11 +56,32 @@ func (j Json) ToString() string {
 	return string(data)
 }
 
+func (a Array) ToString() string {
+	data, err := json.MarshalIndent(a, "", "  ")
+	if err != nil {
+		logger.Debugf("Failed to serialize array as string: %v", err)
+	}
+
+	return string(data)
+}
+
 func JsonResult(r *Response, err error, warning ...string) (*Json, error) {
 	if r != nil {
 		return r.UnmarshalResult()
 	}
 
+	return handle[Json](r, err, warning...)
+}
+
+func ArrayResult(r *Response, err error, warning ...string) (*Array, error) {
+	if r != nil {
+		return r.UnmarshalArray()
+	}
+
+	return handle[Array](r, err, warning...)
+}
+
+func handle[T any](r *Response, err error, warning ...string) (*T, error) {
 	if !strings.HasPrefix(err.Error(), "map") {
 		return nil, err
 	}
