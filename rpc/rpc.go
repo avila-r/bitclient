@@ -147,3 +147,78 @@ func (c *RPCClient) Do(request Request) (*Response, error) {
 	// Return the successfully unmarshaled response
 	return &response, nil
 }
+
+func GetMemoryInfo(mode ...string) (*Json, error) {
+	params := Params{}
+	if len(mode) > 0 && (mode[0] == "stats" || mode[0] == "mallocinfo") {
+		params = append(params, mode[0])
+	}
+
+	request := Request{
+		ID:      Identifier,
+		Version: Version2,
+		Method:  MethodGetMemoryInfo,
+		Params:  params,
+	}
+
+	return JsonResult(Client.Do(request))
+}
+
+func GetInfo() (*Json, error) {
+	request := Request{
+		ID:      Identifier,
+		Version: Version2,
+		Method:  MethodGetRpcInfo,
+		Params:  NoParams,
+	}
+
+	return JsonResult(Client.Do(request))
+}
+
+func Help(command ...string) (string, error) {
+	params := Params{}
+	if len(command) > 0 {
+		params = append(params, command[0])
+	}
+
+	request := Request{
+		ID:      Identifier,
+		Version: Version2,
+		Method:  MethodHelp,
+		Params:  params,
+	}
+
+	response, err := Client.Do(request)
+	if response == nil || err != nil {
+		return "", err
+	}
+
+	return string(response.Result), nil
+}
+
+var LoggingProcedure = func(include []string, exclude []string) (*Json, error) {
+	params := Params{}
+	if len(include) > 0 {
+		params = append(params, include)
+	}
+	if len(exclude) > 0 {
+		params = append(params, exclude)
+	}
+
+	request := Request{
+		ID:      Identifier,
+		Version: Version2,
+		Method:  MethodLogging,
+		Params:  params,
+	}
+
+	return JsonResult(Client.Do(request))
+}
+
+func GetLogging() (*Json, error) {
+	return LoggingProcedure(nil, nil)
+}
+
+func SetLogging(logging LoggingConfig) (*Json, error) {
+	return LoggingProcedure(logging.Include, logging.Exclude)
+}
