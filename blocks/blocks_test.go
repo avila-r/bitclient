@@ -64,6 +64,18 @@ func Test_GetChainTips(t *testing.T) {
 	}
 }
 
+func Test_GetChainTxStats(t *testing.T) {
+	if _, err := blocks.GetChainTxStats(0); err != nil {
+		t.Errorf("Failed to get chain tx stats: %v", err)
+	}
+}
+
+func Test_GetDifficulty(t *testing.T) {
+	if _, err := blocks.GetDifficulty(); err != nil {
+		t.Errorf("Failed to get difficulty: %v", err)
+	}
+}
+
 func Test_GetBlock(t *testing.T) {
 	tests := []struct {
 		Verbosity     int
