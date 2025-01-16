@@ -65,16 +65,15 @@ func init() {
 
 	// Subcommands
 	{
-		BlocksGet.Flags().IntP("verbosity", "v", 1, "Set full response's verbosity level (0-3, default: 0)")
-
 		Blocks.AddCommand(BlocksGet) // bitclient blocks get
 		// Flags
 		{
 			BlocksGet.Flags().Bool("filter", false, "Get filter")
 			BlocksGet.Flags().Bool("stats", false, "Get stats")
 			BlocksGet.Flags().Bool("header", false, "Get header")
-			BlocksGet.Flags().Bool("hex", false, "Set to return the block header in hexadecimal encoding")
 			BlocksGet.Flags().Bool("hash", false, "Get blockhash")
+			BlocksGet.Flags().Bool("hex", false, "Set to return the block header in hexadecimal encoding")
+			BlocksGet.Flags().IntP("verbosity", "v", 1, "Set full response's verbosity level (0-3, default: 0)")
 		}
 
 		Blocks.AddCommand(BlocksHeader) // bitclient blocks header
