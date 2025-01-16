@@ -26,21 +26,68 @@ var (
 		Run:   handlers.Blocks.Get,
 	}
 
-	blockhash string
-	verbosity int
+	BlocksFilter = &cobra.Command{
+		Use:   config.Get().Commands.Blocks.Filter.Use,
+		Short: config.Get().Commands.Blocks.Filter.ShortDescription,
+		Long:  config.Get().Commands.Blocks.Filter.LongDescription,
+		Run:   handlers.Blocks.Filter,
+	}
+
+	BlocksHash = &cobra.Command{
+		Use:   config.Get().Commands.Blocks.Hash.Use,
+		Short: config.Get().Commands.Blocks.Hash.ShortDescription,
+		Long:  config.Get().Commands.Blocks.Hash.LongDescription,
+		Run:   handlers.Blocks.Hash,
+	}
+
+	BlocksHeader = &cobra.Command{
+		Use:   config.Get().Commands.Blocks.Header.Use,
+		Short: config.Get().Commands.Blocks.Header.ShortDescription,
+		Long:  config.Get().Commands.Blocks.Header.LongDescription,
+		Run:   handlers.Blocks.Header,
+	}
+
+	BlocksStats = &cobra.Command{
+		Use:   config.Get().Commands.Blocks.Stats.Use,
+		Short: config.Get().Commands.Blocks.Stats.ShortDescription,
+		Long:  config.Get().Commands.Blocks.Stats.LongDescription,
+		Run:   handlers.Blocks.Stats,
+	}
 )
 
 func init() {
-	// Flags
-	Blocks.Flags().StringVarP(&blockhash, "blockhash", "b", "", "Specify the blockhash (required)")
-	Blocks.Flags().IntVarP(&verbosity, "verbosity", "v", 1, "Set verbosity level (0-3, default: 0)")
-
 	Root.AddCommand(Blocks) // bitclient blocks
+	// Flags
 	{
-		BlocksGet.Flags().StringVarP(&blockhash, "blockhash", "b", "", "Specify the blockhash (required)")
-		BlocksGet.Flags().IntVarP(&verbosity, "verbosity", "v", 1, "Set verbosity level (0-3, default: 0)")
+		Blocks.PersistentFlags().StringP("block", "b", "", "Specify the block if has a target block (optional)")
+		Blocks.Flags().IntP("verbosity", "v", 1, "Set full response's verbosity level (0-3, default: 0)")
+	}
 
-		// Subcommands
+	// Subcommands
+	{
+		BlocksGet.Flags().IntP("verbosity", "v", 1, "Set full response's verbosity level (0-3, default: 0)")
+
 		Blocks.AddCommand(BlocksGet) // bitclient blocks get
+		// Flags
+		{
+			BlocksGet.Flags().Bool("filter", false, "Get filter")
+			BlocksGet.Flags().Bool("stats", false, "Get stats")
+			BlocksGet.Flags().Bool("header", false, "Get header")
+			BlocksGet.Flags().Bool("hex", false, "Set to return the block header in hexadecimal encoding")
+			BlocksGet.Flags().Bool("hash", false, "Get blockhash")
+		}
+
+		Blocks.AddCommand(BlocksHeader) // bitclient blocks header
+		{
+			BlocksHeader.Flags().Bool("hex", false, "Set to return the block header in hexadecimal encoding")
+		}
+
+		Blocks.AddCommand(BlocksFilter) // bitclient blocks filter
+		Blocks.AddCommand(BlocksHash)   // bitclient blocks hash
+
+		Blocks.AddCommand(BlocksStats) // bitclient blocks stats
+		{
+			BlocksStats.Flags().StringSliceP("stat", "s", []string{}, "A specific statistic to retrieve.")
+		}
 	}
 }
