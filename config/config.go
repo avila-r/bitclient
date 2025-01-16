@@ -41,6 +41,10 @@ type Properties struct {
 		Blocks struct {
 			command         // General command settings for blocks
 			Get     command `toml:"get"`
+			Filter  command `toml:"filter"`
+			Hash    command `toml:"hash"`
+			Header  command `toml:"header"`
+			Stats   command `toml:"stats"`
 		} `toml:"blocks"`
 	} `toml:"commands"`
 }
