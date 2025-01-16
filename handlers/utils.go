@@ -9,7 +9,7 @@ type Handler func(*cobra.Command, []string)
 // It returns the matching subcommand or nil if no match is found.
 func subcommand(cmd *cobra.Command, name string) *cobra.Command {
 	for _, children := range cmd.Commands() {
-		if children.Use == name {
+		if children.Use == name || children.Name() == name {
 			return children
 		}
 	}
