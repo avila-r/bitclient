@@ -71,6 +71,12 @@ func (j Json) ToString() string {
 	return string(data)
 }
 
+// Print prints the Json in a readable format.
+func (j Json) Print() {
+	// If unmarshaling as Json succeeds, print the Json object.
+	logger.Print(j.ToString())
+}
+
 // ToString serializes an Array of Json objects into a formatted string.
 // Returns a string representation of the Array.
 func (a Array) ToString() string {
