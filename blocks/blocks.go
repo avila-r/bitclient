@@ -1,6 +1,7 @@
 package blocks
 
 import (
+	"encoding/json"
 	"regexp"
 	"strconv"
 
@@ -85,12 +86,13 @@ func IsBlockHashInvalid(blockhash string) bool {
 //   - 2: Detailed JSON object with block information and transaction details.
 //
 // Parameters:
-// - blockhash (string): The block hash to retrieve. Must be a valid 64-character hex string.
-// - verbosity (int): The verbosity level for the response. Valid values are:
-//   - 0: Serialized hex data.
-//   - 1: Basic block information (default).
-//   - 2: Detailed block and transaction information.
-//   - 3: Full block info with detailed previous outpoints.
+//   - block (string or numeric, required): The block hash or height of the target block.
+//     The function accepts either a block hash (64-character hex string) or a numeric block height.
+//   - verbosity (int): The verbosity level for the response. Valid values are:
+//     0: Serialized hex data.
+//     1: Basic block information (default).
+//     2: Detailed block and transaction information.
+//     3: Full block info with detailed previous outpoints.
 //
 // Returns:
 // - *rpc.Response: The JSON-RPC response containing the block data according to the verbosity level.
@@ -119,9 +121,15 @@ func IsBlockHashInvalid(blockhash string) bool {
 // - VerbosityBasicBlockInfo (1): JSON object with basic block data.
 // - VerbosityDetailedBlockInfo (2): JSON object with block and transaction details.
 // - VerbosityFullBlockInfoWithPrevout (3): Full block details, including previous outpoints.
-func GetBlock(blockhash string, verbosity int) (*rpc.Response, error) {
-	if IsBlockHashInvalid(blockhash) {
-		return nil, errs.Of("blockhash provided isn't in valid format")
+func GetBlock(block string, verbosity int) (*rpc.Response, error) {
+	if IsBlockHashInvalid(block) {
+		height, _ := strconv.Atoi(block)
+		hash, err := GetBlockHash(height)
+		if err != nil {
+			return nil, errs.Of("block must be a valid block hash or a numeric height")
+		} else {
+			block = hash
+		}
 	}
 
 	_, err := VerbosityFrom(verbosity)
@@ -133,7 +141,7 @@ func GetBlock(blockhash string, verbosity int) (*rpc.Response, error) {
 		ID:      rpc.Identifier,
 		Version: rpc.Version2,
 		Method:  MethodGetBlock,
-		Params:  rpc.Params{blockhash, verbosity},
+		Params:  rpc.Params{block, verbosity},
 	}
 
 	return rpc.Client.Do(request)
@@ -146,7 +154,8 @@ func GetBlock(blockhash string, verbosity int) (*rpc.Response, error) {
 // are used for light client applications and can be extended using the "filtertype" parameter.
 //
 // Parameters:
-// - blockhash (string): The hash of the block for which to retrieve the filter. Must be a valid 64-character hex string.
+//   - block (string or numeric, required): The block hash or height of the target block.
+//     The function accepts either a block hash (64-character hex string) or a numeric block height.
 //
 // Returns:
 // - *rpc.Json: The JSON-RPC response containing the compact block filter and header.
@@ -198,16 +207,22 @@ func GetBlock(blockhash string, verbosity int) (*rpc.Response, error) {
 //	  "filter": "0123456789abcdef",
 //	  "header": "fedcba9876543210"
 //	}
-func GetBlockFilter(blockhash string) (*rpc.Json, error) {
-	if IsBlockHashInvalid(blockhash) {
-		return nil, errs.Of("blockhash provided isn't in valid format")
+func GetBlockFilter(block string) (*rpc.Json, error) {
+	if IsBlockHashInvalid(block) {
+		height, _ := strconv.Atoi(block)
+		hash, err := GetBlockHash(height)
+		if err != nil {
+			return nil, errs.Of("block must be a valid block hash or a numeric height")
+		} else {
+			block = hash
+		}
 	}
 
 	request := rpc.Request{
 		ID:      rpc.Identifier,
 		Version: rpc.Version2,
 		Method:  MethodGetBlockFilter,
-		Params:  rpc.Params{blockhash, "extended"},
+		Params:  rpc.Params{block, "extended"},
 	}
 
 	result, err := rpc.Client.Do(request)
@@ -221,7 +236,7 @@ func GetBlockFilter(blockhash string) (*rpc.Json, error) {
 // The response contains the block hash, encoded as a hexadecimal string.
 //
 // Parameters:
-// - height (string): The height index of the block in the best-block chain. Must be a valid numeric string.
+// - height (numeric): The height index of the block in the best-block chain.
 //
 // Returns:
 // - *rpc.Response: The JSON-RPC response containing the block hash as a hex-encoded string.
@@ -270,7 +285,7 @@ func GetBlockFilter(blockhash string) (*rpc.Json, error) {
 //	  "error": null,
 //	  "id": "curltest"
 //	}
-func GetBlockHash(height string) (*rpc.Response, error) {
+func GetBlockHash(height int) (string, error) {
 	request := rpc.Request{
 		ID:      rpc.Identifier,
 		Version: rpc.Version2,
@@ -278,7 +293,17 @@ func GetBlockHash(height string) (*rpc.Response, error) {
 		Params:  rpc.Params{height},
 	}
 
-	return rpc.Client.Do(request)
+	response, err := rpc.Client.Do(request)
+	if response == nil || err != nil {
+		return "", err
+	}
+
+	hash := ""
+	if err := json.Unmarshal(response.Result, &hash); err != nil {
+		return string(response.Result), err
+	}
+
+	return hash, nil
 }
 
 // GetBlockHeader retrieves the header of a block specified by its block hash.
@@ -288,7 +313,8 @@ func GetBlockHash(height string) (*rpc.Response, error) {
 // depending on the verbosity setting.
 //
 // Parameters:
-//   - blockhash (string): The hash of the block for which to retrieve the header. Must be a valid 64-character hex string.
+//   - block (string or numeric, required): The block hash or height of the target block.
+//     The function accepts either a block hash (64-character hex string) or a numeric block height.
 //   - verbose (optional, bool): If true (default), returns a JSON object with detailed block header information.
 //     If false, returns the block header as hex-encoded data.
 //
@@ -348,7 +374,17 @@ func GetBlockHash(height string) (*rpc.Response, error) {
 //	{
 //	  "hex": "0200000001abcd1234efgh5678..." // Serialized, hex-encoded block header data
 //	}
-func GetBlockHeader(blockhash string, verbose ...bool) (*rpc.Response, error) {
+func GetBlockHeader(block string, verbose ...bool) (*rpc.Response, error) {
+	if IsBlockHashInvalid(block) {
+		height, _ := strconv.Atoi(block)
+		hash, err := GetBlockHash(height)
+		if err != nil {
+			return nil, errs.Of("block must be a valid block hash or a numeric height")
+		} else {
+			block = hash
+		}
+	}
+
 	verbosity := true // Default value
 	if len(verbose) > 0 {
 		verbosity = verbose[0]
@@ -358,7 +394,7 @@ func GetBlockHeader(blockhash string, verbose ...bool) (*rpc.Response, error) {
 		ID:      rpc.Identifier,
 		Version: rpc.Version2,
 		Method:  MethodGetBlockHeader,
-		Params:  rpc.Params{blockhash, verbosity},
+		Params:  rpc.Params{block, verbosity},
 	}
 
 	return rpc.Client.Do(request)
@@ -370,7 +406,7 @@ func GetBlockHeader(blockhash string, verbose ...bool) (*rpc.Response, error) {
 // It computes various per-block statistics, with amounts in satoshis, for the block at the given height or block hash.
 //
 // Parameters:
-//   - hash_or_height (string or numeric, required): The block hash or height of the target block.
+//   - block (string or numeric, required): The block hash or height of the target block.
 //     The function accepts either a block hash (64-character hex string) or a numeric block height.
 //   - stats (optional, array of strings): A list of specific statistics to retrieve.
 //     If no stats are provided, the function will return all available statistics. Example values:
@@ -438,16 +474,20 @@ func GetBlockHeader(blockhash string, verbose ...bool) (*rpc.Response, error) {
 //	  "utxo_increase": 50,
 //	  "utxo_size_inc": 1000
 //	}
-func GetBlockStats(hash_or_height string, stats ...string) (*rpc.Json, error) {
-	if invalid := IsBlockHashInvalid(hash_or_height); invalid {
-		if _, err := strconv.Atoi(hash_or_height); err != nil {
-			return nil, errs.Of("hash_or_height must be a valid block hash or a numeric height")
+func GetBlockStats(block string, stats ...string) (*rpc.Json, error) {
+	if IsBlockHashInvalid(block) {
+		height, _ := strconv.Atoi(block)
+		hash, err := GetBlockHash(height)
+		if err != nil {
+			return nil, errs.Of("block must be a valid block hash or a numeric height")
+		} else {
+			block = hash
 		}
 	}
 
-	params := rpc.Params{hash_or_height}
-	for _, stat := range stats {
-		params = append(params, stat)
+	params := rpc.Params{block}
+	if len(stats) > 0 {
+		params = append(params, stats)
 	}
 
 	request := rpc.Request{
