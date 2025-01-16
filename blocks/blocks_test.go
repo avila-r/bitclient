@@ -126,7 +126,12 @@ func Test_GetBlockFilter(t *testing.T) {
 	}
 }
 
-func Test_GetBlockHash(t *testing.T) {}
+func Test_GetBlockHash(t *testing.T) {
+	height := 1000
+	if _, err := blocks.GetBlockHash(height); err != nil {
+		t.Errorf("Failed to get block hash: %v", err)
+	}
+}
 
 func Test_GetBlockHeader(t *testing.T) {
 	blockhash := "00000000c937983704a73af28acdec37b049d214adbda81d7e2a3dd146f6ed09"
