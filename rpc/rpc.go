@@ -148,6 +148,58 @@ func (c *RPCClient) Do(request Request) (*Response, error) {
 	return &response, nil
 }
 
+// GetMemoryInfo retrieves memory usage information from the Bitcoin client.
+//
+// This function sends a JSON-RPC request using the "getmemoryinfo" procedure call.
+// The response contains details about the node's memory usage, including allocation statistics
+// and optionally malloc information.
+//
+// Parameters:
+// - mode (optional, string): Can be one of the following:
+//   - "stats" (default): Returns general memory usage statistics.
+//   - "mallocinfo": Returns low-level malloc implementation details as an XML string.
+//
+// Returns:
+// - *Json: The JSON-RPC response containing memory usage data.
+// - error: An error if the mode is invalid or if the request fails.
+//
+// Example Usage:
+//
+//   - Using Bitclient:
+//     $ bitclient rpc memory
+//
+//   - Using the Bitcoin CLI:
+//     $ bitcoin-cli getmemoryinfo "stats"
+//
+//   - Using cURL:
+//     $ curl --user {username} --data-binary '{"jsonrpc": "1.0", "id": "curltest", "method": "getmemoryinfo", "params": ["stats"]}' \
+//     -H 'content-type: text/plain;' {url}
+//
+// RPC Request Example:
+//
+//	{
+//	  "jsonrpc": "1.0",
+//	  "id": "curltest",
+//	  "method": "getmemoryinfo",
+//	  "params": ["stats"]
+//	}
+//
+// JSON Response:
+//
+//	{
+//	  "locked": {
+//	    "used": 512,
+//	    "free": 1024,
+//	    "total": 1536,
+//	    "locked": 768,
+//	    "chunks_used": 3,
+//	    "chunks_free": 5
+//	  }
+//	}
+//
+// Notes:
+// - Ensure the Bitcoin node is running to process the RPC request.
+// - The "mallocinfo" mode is useful for debugging memory allocation at a lower level.
 func GetMemoryInfo(mode ...string) (*Json, error) {
 	params := Params{}
 	if len(mode) > 0 && (mode[0] == "stats" || mode[0] == "mallocinfo") {
@@ -164,6 +216,50 @@ func GetMemoryInfo(mode ...string) (*Json, error) {
 	return JsonResult(Client.Do(request))
 }
 
+// GetInfo retrieves general information about the Bitcoin client.
+//
+// This function sends a JSON-RPC request using the "getrpcinfo" procedure call.
+// The response contains information about the node, including its version, protocol, and network.
+//
+// Returns:
+// - *Json: The JSON-RPC response containing general node information.
+// - error: An error if the request fails.
+//
+// Example Usage:
+//
+//   - Using Bitclient:
+//     $ bitclient rpc info
+//
+//   - Using the Bitcoin CLI:
+//     $ bitcoin-cli getrpcinfo
+//
+//   - Using cURL:
+//     $ curl --user {username} --data-binary '{"jsonrpc": "1.0", "id": "curltest", "method": "getrpcinfo", "params": []}' \
+//     -H 'content-type: text/plain;' {url}
+//
+// RPC Request Example:
+//
+//	{
+//	  "jsonrpc": "1.0",
+//	  "id": "curltest",
+//	  "method": "getrpcinfo",
+//	  "params": []
+//	}
+//
+// JSON Response:
+//
+//	{
+//	  "active_commands": [
+//	    {
+//	      "method": "getinfo",
+//	      "duration": 3
+//	    }
+//	  ],
+//	  "logpath": "/path/to/debug.log"
+//	}
+//
+// Notes:
+// - Useful for debugging and monitoring RPC-related commands and logs.
 func GetInfo() (*Json, error) {
 	request := Request{
 		ID:      Identifier,
@@ -175,6 +271,45 @@ func GetInfo() (*Json, error) {
 	return JsonResult(Client.Do(request))
 }
 
+// Help retrieves help information for a specific RPC command or a list of all commands.
+//
+// This function sends a JSON-RPC request using the "help" procedure call.
+// If a command is specified, the response contains detailed help for that command.
+//
+// Parameters:
+// - command (optional, string): The name of the RPC command for which to retrieve help.
+//
+// Returns:
+// - string: A string containing help information for the requested command.
+// - error: An error if the request fails or the command is invalid.
+//
+// Example Usage (Assuming "getinfo" is the target):
+//
+//   - Using Bitclient:
+//     $ bitclient rpc help getinfo
+//
+//   - Using the Bitcoin CLI:
+//     $ bitcoin-cli help "getinfo"
+//
+//   - Using cURL:
+//     $ curl --user {username} --data-binary '{"jsonrpc": "1.0", "id": "curltest", "method": "help", "params": ["getinfo"]}' \
+//     -H 'content-type: text/plain;' {url}
+//
+// RPC Request Example:
+//
+//	{
+//	  "jsonrpc": "1.0",
+//	  "id": "curltest",
+//	  "method": "help",
+//	  "params": ["getinfo"]
+//	}
+//
+// Response Example:
+//
+//	"Returns a list of RPC commands or help for a single command."
+//
+// Notes:
+// - The help information may vary depending on the version of the Bitcoin client.
 func Help(command ...string) (string, error) {
 	params := Params{}
 	if len(command) > 0 {
@@ -196,6 +331,49 @@ func Help(command ...string) (string, error) {
 	return string(response.Result), nil
 }
 
+// LoggingProcedure configures logging categories for the Bitcoin client.
+//
+// This function sends a JSON-RPC request using the "logging" procedure call.
+// The response modifies the enabled and disabled logging categories.
+//
+// Parameters:
+// - include ([]string): Categories to enable.
+// - exclude ([]string): Categories to disable.
+//
+// Returns:
+// - *Json: The JSON-RPC response containing the updated logging state.
+// - error: An error if the request fails or the categories are invalid.
+//
+// Example Usage:
+//
+//   - Using Bitclient:
+//     $ bitclient rpc logging ["net", "http"] ["rpc"]
+//
+//   - Using the Bitcoin CLI:
+//     $ bitcoin-cli logging ["net", "http"] ["rpc"]
+//
+//   - Using cURL:
+//     $ curl --user {username} --data-binary '{"jsonrpc": "1.0", "id": "curltest", "method": "logging", "params": [["net", "http"], ["rpc"]]}' \
+//     -H 'content-type: text/plain;' {url}
+//
+// RPC Request Example:
+//
+//	{
+//	  "jsonrpc": "1.0",
+//	  "id": "curltest",
+//	  "method": "logging",
+//	  "params": [["net", "http"], ["rpc"]]
+//	}
+//
+// JSON Response:
+//
+//	{
+//	  "active": ["net", "http"],
+//	  "inactive": ["rpc", "db"]
+//	}
+//
+// Notes:
+// - Categories must be valid logging categories supported by the Bitcoin client.
 var LoggingProcedure = func(include []string, exclude []string) (*Json, error) {
 	params := Params{}
 	if len(include) > 0 {
@@ -215,10 +393,23 @@ var LoggingProcedure = func(include []string, exclude []string) (*Json, error) {
 	return JsonResult(Client.Do(request))
 }
 
+// GetLogging retrieves the current active and inactive logging categories from the Bitcoin client.
+//
+// Returns:
+//   - A JSON object with "active" and "inactive" logging categories.
+//   - Error: If the request to the Bitcoin client fails.
 func GetLogging() (*Json, error) {
 	return LoggingProcedure(nil, nil)
 }
 
+// SetLogging updates the logging configuration of the Bitcoin client.
+//
+// Parameters:
+//   - logging (LoggingConfig): Includes categories to enable and exclude categories to disable.
+//
+// Returns:
+//   - A JSON object reflecting the updated logging configuration.
+//   - Error: If the request to the Bitcoin client fails or the parameters are invalid.
 func SetLogging(logging LoggingConfig) (*Json, error) {
 	return LoggingProcedure(logging.Include, logging.Exclude)
 }
