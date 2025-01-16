@@ -33,6 +33,22 @@ use = "blocks"
 short = "Interact with Bitcoin blocks"
 long = "The 'blocks' command provides tools to interact with individual blocks in the blockchain. You can retrieve block information, validate blocks, and set verbosity levels for block data."
 [commands.blocks.get]
-use = "get [blockhash]"
+use = "get [block]"
 short = "Retrieve information about a specific block"
-long = "The 'get' subcommand retrieves detailed information about a specific block in the blockchain. You must provide the block hash to use this command. Verbosity levels can be set to control the granularity of the block data returned."
+long = "The 'get' subcommand retrieves detailed information about a specific block in the blockchain. You must provide the block hash to use this command. Verbosity levels can be set to control the granularity of the block data returned. Use this command to inspect or find detailed block data."
+[commands.blocks.filter]
+use = "filter [block]"
+short = "Filter and retrieve specific block data"
+long = "The 'filter' subcommand allows you to filter and retrieve specific data from a block. Use this command to focus on particular aspects or properties of a block, such as transactions or metadata."
+[commands.blocks.hash]
+use = "hash [block]"
+short = "Retrieve the hash of a specific block"
+long = "The 'hash' subcommand retrieves the block hash for a given block. Provide the block's height or identifier to get its unique hash value, which is critical for verification and blockchain operations."
+[commands.blocks.header]
+use = "header [block]"
+short = "Retrieve the header of a specific block"
+long = "The 'header' subcommand retrieves the header information of a block, including metadata such as block size, timestamp, and the previous block hash. This is useful for understanding the context and structure of the block."
+[commands.blocks.stats]
+use = "stats [block]"
+short = "Retrieve statistical data about a block"
+long = "The 'stats' subcommand provides statistical data about a block, such as transaction count, block size, and other metrics that help in analyzing the block's characteristics within the blockchain."
