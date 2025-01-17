@@ -1,7 +1,6 @@
 package blocks
 
 import (
-	"encoding/json"
 	"regexp"
 	"strconv"
 
@@ -294,13 +293,13 @@ func GetBlockHash(height int) (string, error) {
 	}
 
 	response, err := rpc.Client.Do(request)
-	if response == nil || err != nil {
+	if err != nil {
 		return "", err
 	}
 
 	hash := ""
-	if err := json.Unmarshal(response.Result, &hash); err != nil {
-		return string(response.Result), err
+	if err := response.Bind(&hash); err != nil {
+		return "", err
 	}
 
 	return hash, nil
