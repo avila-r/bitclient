@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/avila-r/bitclient/config"
-	"github.com/avila-r/bitclient/handlers"
+	"github.com/avila-r/bitclient/handler"
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 		Use:   config.Get().Commands.Blockchain.Info.Use,
 		Short: config.Get().Commands.Blockchain.Info.ShortDescription,
 		Long:  config.Get().Commands.Blockchain.Info.LongDescription,
-		Run:   handlers.Blockchain.Info,
+		Run:   handler.Blockchain.Info,
 	}
 )
 

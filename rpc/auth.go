@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/avila-r/bitclient/errs"
+	"github.com/avila-r/bitclient/failure"
 )
 
 // Authentication represents the authentication details used for HTTP requests.
@@ -28,28 +28,28 @@ const (
 func (a *Authentication) Validate() error {
 	// Check if the authentication type is valid (either API key or credentials).
 	if a.Type != AuthenticationTypeCredentials && a.Type != AuthenticationTypeKey {
-		return errs.Of("invalid authentication type")
+		return failure.Of("invalid authentication type")
 	}
 
 	// Ensure that the label is not empty.
 	if a.Label == "" {
-		return errs.Of("authentication label cannot be empty")
+		return failure.Of("authentication label cannot be empty")
 	}
 
 	// If the type is credentials, ensure the label is in the correct format (username:password).
 	if a.Type == AuthenticationTypeCredentials {
 		if !strings.Contains(a.Label, ":") {
-			return errs.Of("credentials must be in format 'username:password'")
+			return failure.Of("credentials must be in format 'username:password'")
 		}
 
 		parts := strings.SplitN(a.Label, ":", 2)
 		if len(parts) != 2 {
-			return errs.Of("credentials must contain exactly a ':' between 'username' and 'password'")
+			return failure.Of("credentials must contain exactly a ':' between 'username' and 'password'")
 		}
 
 		// Ensure that both username and password are not empty.
 		if parts[0] == "" || parts[1] == "" {
-			return errs.Of("username and password cannot be empty")
+			return failure.Of("username and password cannot be empty")
 		}
 	}
 
@@ -85,7 +85,7 @@ func (a *Authentication) Setup(req *http.Request) error {
 		username, password := a.GetCredentials()
 		req.SetBasicAuth(username, password) // Set the basic auth credentials.
 	default:
-		return errs.Of("unsupported authentication type")
+		return failure.Of("unsupported authentication type")
 	}
 
 	return nil

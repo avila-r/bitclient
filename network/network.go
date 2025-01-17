@@ -3,7 +3,7 @@ package network
 import (
 	"strconv"
 
-	"github.com/avila-r/bitclient/errs"
+	"github.com/avila-r/bitclient/failure"
 	"github.com/avila-r/bitclient/rpc"
 )
 
@@ -872,7 +872,7 @@ func Health() bool {
 //     time the ban should end.
 func SetBan(ban Ban) error {
 	if ban.Subnet == "" {
-		return errs.Of("ban's subnet must be provided")
+		return failure.Of("ban's subnet must be provided")
 	}
 
 	params := rpc.Params{
@@ -936,7 +936,7 @@ func SetBan(ban Ban) error {
 //   - A subnet can be specified in the form of an IP address with a subnet mask (e.g., "192.168.0.0/24").
 func Unban(subnet string) error {
 	if subnet == "" {
-		return errs.Of("ban's subnet must be provided")
+		return failure.Of("ban's subnet must be provided")
 	}
 
 	params := rpc.Params{

@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/avila-r/bitclient/config"
-	"github.com/avila-r/bitclient/handlers"
+	"github.com/avila-r/bitclient/handler"
 )
 
 // bitclient blocks
@@ -13,7 +13,7 @@ var (
 		Use:   config.Get().Commands.Blocks.Use,
 		Short: config.Get().Commands.Blocks.ShortDescription,
 		Long:  config.Get().Commands.Blocks.LongDescription,
-		Run:   handlers.Blocks,
+		Run:   handler.Blocks,
 	}
 )
 
@@ -23,35 +23,35 @@ var (
 		Use:   config.Get().Commands.Blocks.Get.Use,
 		Short: config.Get().Commands.Blocks.Get.ShortDescription,
 		Long:  config.Get().Commands.Blocks.Get.LongDescription,
-		Run:   handlers.Blocks.Get,
+		Run:   handler.Blocks.Get,
 	}
 
 	BlocksFilter = &cobra.Command{
 		Use:   config.Get().Commands.Blocks.Filter.Use,
 		Short: config.Get().Commands.Blocks.Filter.ShortDescription,
 		Long:  config.Get().Commands.Blocks.Filter.LongDescription,
-		Run:   handlers.Blocks.Filter,
+		Run:   handler.Blocks.Filter,
 	}
 
 	BlocksHash = &cobra.Command{
 		Use:   config.Get().Commands.Blocks.Hash.Use,
 		Short: config.Get().Commands.Blocks.Hash.ShortDescription,
 		Long:  config.Get().Commands.Blocks.Hash.LongDescription,
-		Run:   handlers.Blocks.Hash,
+		Run:   handler.Blocks.Hash,
 	}
 
 	BlocksHeader = &cobra.Command{
 		Use:   config.Get().Commands.Blocks.Header.Use,
 		Short: config.Get().Commands.Blocks.Header.ShortDescription,
 		Long:  config.Get().Commands.Blocks.Header.LongDescription,
-		Run:   handlers.Blocks.Header,
+		Run:   handler.Blocks.Header,
 	}
 
 	BlocksStats = &cobra.Command{
 		Use:   config.Get().Commands.Blocks.Stats.Use,
 		Short: config.Get().Commands.Blocks.Stats.ShortDescription,
 		Long:  config.Get().Commands.Blocks.Stats.LongDescription,
-		Run:   handlers.Blocks.Stats,
+		Run:   handler.Blocks.Stats,
 	}
 )
 

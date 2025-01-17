@@ -10,7 +10,7 @@ import (
 
 	"github.com/avila-r/env"
 
-	"github.com/avila-r/bitclient/errs"
+	"github.com/avila-r/bitclient/failure"
 	"github.com/avila-r/bitclient/logger"
 )
 
@@ -65,12 +65,12 @@ var (
 func New(uri string, authentication Authentication) (*RPCClient, error) {
 	// Validate URL
 	if uri == "" {
-		return nil, errs.Of("URL cannot be empty")
+		return nil, failure.Of("URL cannot be empty")
 	}
 
 	parsed, err := url.Parse(uri) // Parse the URI
 	if err != nil || !strings.HasPrefix(parsed.Scheme, "http") {
-		return nil, errs.Of("invalid URL: must be a valid HTTP/HTTPS URL")
+		return nil, failure.Of("invalid URL: must be a valid HTTP/HTTPS URL")
 	}
 
 	// Validate the authentication details
@@ -92,14 +92,14 @@ func (c *RPCClient) Do(request Request) (*Response, error) {
 	body, err := json.Marshal(request)
 	if err != nil {
 		logger.Debugf("Error serializing request: %v", err)
-		return nil, errs.Of("failed to serialize request: %v", err.Error())
+		return nil, failure.Of("failed to serialize request: %v", err.Error())
 	}
 
 	// Create a new HTTP POST request
 	req, err := http.NewRequest("POST", c.URL, bytes.NewBuffer(body))
 	if err != nil {
 		logger.Debugf("Error creating HTTP request: %v", err)
-		return nil, errs.Of("failed to set up http request: %v", err.Error())
+		return nil, failure.Of("failed to set up http request: %v", err.Error())
 	}
 
 	// Setup authentication headers
@@ -114,7 +114,7 @@ func (c *RPCClient) Do(request Request) (*Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
 		logger.Debugf("Error sending request: %v", err)
-		return nil, errs.Of("failed to send http request: %v", err.Error())
+		return nil, failure.Of("failed to send http request: %v", err.Error())
 	}
 	defer resp.Body.Close()
 
@@ -122,26 +122,26 @@ func (c *RPCClient) Do(request Request) (*Response, error) {
 	payload, err := io.ReadAll(resp.Body)
 	if err != nil {
 		logger.Debugf("Error reading response: %v", err)
-		return nil, errs.Of("failed to read http response: %v", err.Error())
+		return nil, failure.Of("failed to read http response: %v", err.Error())
 	}
 
 	// Check if the response status is OK (200)
 	if resp.StatusCode != http.StatusOK {
 		logger.Debugf("Server response error: %s", payload)
-		return nil, errs.Of("server responded with status code %d: %s", resp.StatusCode, payload)
+		return nil, failure.Of("server responded with status code %d: %s", resp.StatusCode, payload)
 	}
 
 	// Unmarshal the response payload into the Response struct
 	response := Response{}
 	if err := json.Unmarshal(payload, &response); err != nil {
 		logger.Debugf("Error deserializing response: %v", err)
-		return nil, errs.Of("failed to deserialize response: %v", err.Error())
+		return nil, failure.Of("failed to deserialize response: %v", err.Error())
 	}
 
 	// If the response contains an error, return it
 	if response.Error != nil {
 		logger.Debugf("RPC call error: %v", response.Error)
-		return nil, errs.Of("%v", response.Error)
+		return nil, failure.Of("%v", response.Error)
 	}
 
 	// Return the successfully unmarshaled response

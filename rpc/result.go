@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/avila-r/bitclient/errs"
+	"github.com/avila-r/bitclient/failure"
 	"github.com/avila-r/bitclient/logger"
 )
 
@@ -43,7 +43,7 @@ func (r *Response) UnmarshalResult() (*Json, error) {
 	result := Json{}
 	if err := json.Unmarshal(r.Result, &result); err != nil {
 		logger.Debugf("Error processing result: %v", err)
-		return nil, errs.Of("failed to process result: %v", err.Error())
+		return nil, failure.Of("failed to process result: %v", err.Error())
 	}
 
 	return &result, nil
@@ -55,7 +55,7 @@ func (r *Response) UnmarshalArray() (*Array, error) {
 	result := Array{}
 	if err := json.Unmarshal(r.Result, &result); err != nil {
 		logger.Debugf("Error processing result: %v", err)
-		return nil, errs.Of("failed to process result: %v", err.Error())
+		return nil, failure.Of("failed to process result: %v", err.Error())
 	}
 
 	return &result, nil
@@ -167,9 +167,9 @@ func handle[T any](err error, warning ...string) (*T, error) {
 	if message, exists := stringToMap(err.Error())["message"]; exists {
 		var err error
 		if len(warning) > 0 {
-			err = errs.Of("%s (%s)", strings.ToLower(message), warning[0])
+			err = failure.Of("%s (%s)", strings.ToLower(message), warning[0])
 		} else {
-			err = errs.Of("%v", strings.ToLower(message))
+			err = failure.Of("%v", strings.ToLower(message))
 		}
 		return nil, err
 	}

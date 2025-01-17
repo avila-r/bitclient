@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/avila-r/bitclient/errs"
+	"github.com/avila-r/bitclient/failure"
 	"github.com/avila-r/bitclient/rpc"
 )
 
@@ -51,7 +51,7 @@ const (
 //     will result in an error.
 func VerbosityFrom(i int) (BlockInfoVerbosity, error) {
 	if i < int(VerbositySerializedHexData) || i > int(VerbosityFullBlockInfoWithPrevout) {
-		return 0, errs.Of("invalid verbosity level (%d), valid range is 0-3", i)
+		return 0, failure.Of("invalid verbosity level (%d), valid range is 0-3", i)
 	}
 	return BlockInfoVerbosity(i), nil
 }
@@ -126,7 +126,7 @@ func GetBlock(block string, verbosity int) (*rpc.Response, error) {
 		height, _ := strconv.Atoi(block)
 		hash, err := GetBlockHash(height)
 		if err != nil {
-			return nil, errs.Of("block must be a valid block hash or a numeric height")
+			return nil, failure.Of("block must be a valid block hash or a numeric height")
 		} else {
 			block = hash
 		}
@@ -212,7 +212,7 @@ func GetBlockFilter(block string) (*rpc.Json, error) {
 		height, _ := strconv.Atoi(block)
 		hash, err := GetBlockHash(height)
 		if err != nil {
-			return nil, errs.Of("block must be a valid block hash or a numeric height")
+			return nil, failure.Of("block must be a valid block hash or a numeric height")
 		} else {
 			block = hash
 		}
@@ -379,7 +379,7 @@ func GetBlockHeader(block string, verbose ...bool) (*rpc.Response, error) {
 		height, _ := strconv.Atoi(block)
 		hash, err := GetBlockHash(height)
 		if err != nil {
-			return nil, errs.Of("block must be a valid block hash or a numeric height")
+			return nil, failure.Of("block must be a valid block hash or a numeric height")
 		} else {
 			block = hash
 		}
@@ -479,7 +479,7 @@ func GetBlockStats(block string, stats ...string) (*rpc.Json, error) {
 		height, _ := strconv.Atoi(block)
 		hash, err := GetBlockHash(height)
 		if err != nil {
-			return nil, errs.Of("block must be a valid block hash or a numeric height")
+			return nil, failure.Of("block must be a valid block hash or a numeric height")
 		} else {
 			block = hash
 		}
