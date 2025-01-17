@@ -16,9 +16,8 @@ var (
 		Run:   handler.Blocks,
 	}
 )
-
-// bitclient blocks get
 var (
+	// bitclient blocks get
 	BlocksGet = &cobra.Command{
 		Use:   config.Get().Commands.Blocks.Get.Use,
 		Short: config.Get().Commands.Blocks.Get.ShortDescription,
@@ -26,6 +25,7 @@ var (
 		Run:   handler.Blocks.Get,
 	}
 
+	// bitclient blocks filter
 	BlocksFilter = &cobra.Command{
 		Use:   config.Get().Commands.Blocks.Filter.Use,
 		Short: config.Get().Commands.Blocks.Filter.ShortDescription,
@@ -33,6 +33,7 @@ var (
 		Run:   handler.Blocks.Filter,
 	}
 
+	// bitclient blocks hash
 	BlocksHash = &cobra.Command{
 		Use:   config.Get().Commands.Blocks.Hash.Use,
 		Short: config.Get().Commands.Blocks.Hash.ShortDescription,
@@ -40,6 +41,7 @@ var (
 		Run:   handler.Blocks.Hash,
 	}
 
+	// bitclient blocks header
 	BlocksHeader = &cobra.Command{
 		Use:   config.Get().Commands.Blocks.Header.Use,
 		Short: config.Get().Commands.Blocks.Header.ShortDescription,
@@ -47,6 +49,7 @@ var (
 		Run:   handler.Blocks.Header,
 	}
 
+	// bitclient blocks stats
 	BlocksStats = &cobra.Command{
 		Use:   config.Get().Commands.Blocks.Stats.Use,
 		Short: config.Get().Commands.Blocks.Stats.ShortDescription,
