@@ -61,6 +61,22 @@ func (r *Response) UnmarshalArray() (*Array, error) {
 	return &result, nil
 }
 
+func (r *Response) Bind(target any) error {
+	if r == nil {
+		return failure.Of("cannot unwrap nil response's result")
+	}
+
+	if r.Error != nil {
+		return failure.Of("response contains an error")
+	}
+
+	if err := json.Unmarshal(r.Result, &target); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // ToString serializes a Json object into a formatted string.
 // Returns a string representation of the Json object.
 func (j Json) ToString() string {
@@ -85,6 +101,12 @@ func (a Array) ToString() string {
 		logger.Debugf("Failed to serialize array as string: %v", err)
 	}
 	return string(data)
+}
+
+// Print prints the Array in a readable format.
+func (a Array) Print() {
+	// If unmarshaling as Array succeeds, print the Array.
+	logger.Print(a.ToString())
 }
 
 // JsonResult unmarshals a response into a Json object and handles errors if any.
