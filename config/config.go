@@ -31,6 +31,8 @@ type Properties struct {
 	Commands struct {
 		Config command `toml:"config"` // Configuration command settings
 
+		Ping command `toml:"ping"` // Health check command settings
+
 		// Blockchain contains blockchain-related command settings
 		Blockchain struct {
 			command         // General command settings for blockchain
@@ -46,6 +48,32 @@ type Properties struct {
 			Header  command `toml:"header"`
 			Stats   command `toml:"stats"`
 		} `toml:"blocks"`
+
+		// Nodes contains node-related command settings
+		Nodes struct {
+			command            // General command settings for nodes
+			Connect    command `toml:"connect"`
+			Disconnect command `toml:"disconnect"`
+			Add        command `toml:"add"`
+			Remove     command `toml:"remove"`
+			Info       command `toml:"info"`
+			Find       command `toml:"find"`
+			Unban      command `toml:"unban"`
+		} `toml:"nodes"`
+
+		// Network contains network-related command settings
+		Network struct {
+			command             // General command settings for network
+			Activate    command `toml:"activate"`
+			Deactivate  command `toml:"deactivate"`
+			Connections command `toml:"connections"`
+			Traffic     command `toml:"traffic"`
+			Info        command `toml:"info"`
+			Peers       command `toml:"peers"`
+			Ban         command `toml:"ban"`
+			Unban       command `toml:"unban"`
+			Blacklist   command `toml:"blacklist"`
+		} `toml:"network"`
 	} `toml:"commands"`
 }
 
