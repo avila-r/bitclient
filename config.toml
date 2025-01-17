@@ -19,10 +19,16 @@ use = "config"
 short = "Print configuration details"
 long = "The 'config' command displays the current configuration details loaded from the config.toml file."
 
+[commands.ping]
+use = "ping"
+short = "Send a ping to the Bitcoin Core daemon"
+long = "The 'ping' command sends a ping request to the Bitcoin Core daemon to test the connection and measure response time."
+
 [commands.blockchain]
 use = "blockchain"
 short = "Interact with the blockchain"
 long = "The 'blockchain' command allows interaction with the blockchain, including retrieving information and performing actions like checking blockchain status."
+
 [commands.blockchain.info]
 use = "info"
 short = "Get information about the blockchain"
@@ -32,23 +38,118 @@ long = "The 'info' subcommand retrieves detailed information about the blockchai
 use = "blocks"
 short = "Interact with Bitcoin blocks"
 long = "The 'blocks' command provides tools to interact with individual blocks in the blockchain. You can retrieve block information, validate blocks, and set verbosity levels for block data."
+
 [commands.blocks.get]
 use = "get [block]"
 short = "Retrieve information about a specific block"
 long = "The 'get' subcommand retrieves detailed information about a specific block in the blockchain. You must provide the block hash to use this command. Verbosity levels can be set to control the granularity of the block data returned. Use this command to inspect or find detailed block data."
+
 [commands.blocks.filter]
 use = "filter [block]"
 short = "Filter and retrieve specific block data"
 long = "The 'filter' subcommand allows you to filter and retrieve specific data from a block. Use this command to focus on particular aspects or properties of a block, such as transactions or metadata."
+
 [commands.blocks.hash]
 use = "hash [block]"
 short = "Retrieve the hash of a specific block"
 long = "The 'hash' subcommand retrieves the block hash for a given block. Provide the block's height or identifier to get its unique hash value, which is critical for verification and blockchain operations."
+
 [commands.blocks.header]
 use = "header [block]"
 short = "Retrieve the header of a specific block"
 long = "The 'header' subcommand retrieves the header information of a block, including metadata such as block size, timestamp, and the previous block hash. This is useful for understanding the context and structure of the block."
+
 [commands.blocks.stats]
 use = "stats [block]"
 short = "Retrieve statistical data about a block"
 long = "The 'stats' subcommand provides statistical data about a block, such as transaction count, block size, and other metrics that help in analyzing the block's characteristics within the blockchain."
+
+[commands.nodes]
+use = "nodes"
+short = "Manage network nodes"
+long = "The 'nodes' command allows you to manage Bitcoin network nodes, including connecting to, disconnecting from, and retrieving information about nodes."
+
+[commands.nodes.connect]
+use = "connect [node]"
+short = "Connect to a specific node"
+long = "The 'connect' subcommand establishes a connection with a specified node in the Bitcoin network. Provide the node's IP address or identifier to connect."
+
+[commands.nodes.disconnect]
+use = "disconnect [node]"
+short = "Disconnect from a specific node"
+long = "The 'disconnect' subcommand severs the connection to a specified node. Use this to stop interacting with a problematic or unnecessary node."
+
+[commands.nodes.add]
+use = "add [node]"
+short = "Add a node to the connection list"
+long = "The 'add' subcommand adds a node to your Bitcoin Core connection list, ensuring persistent communication with that node."
+
+[commands.nodes.remove]
+use = "remove [node]"
+short = "Remove a node from the connection list"
+long = "The 'remove' subcommand deletes a node from your Bitcoin Core connection list, stopping communication with that node."
+
+[commands.nodes.info]
+use = "info [node]"
+short = "Retrieve information about a specific node"
+long = "The 'info' subcommand retrieves detailed information about a specific node, including its address, status, and statistics about the connection."
+
+[commands.nodes.find]
+use = "find"
+short = "Discover available nodes"
+long = "The 'find' subcommand searches for available nodes in the Bitcoin network that you can connect to."
+
+[commands.nodes.unban]
+use = "unban"
+short = "Unban a previously banned node"
+long = "The 'unban' subcommand removes a ban on a previously banned node, allowing you to reconnect to it."
+
+[commands.network]
+use = "network"
+short = "Manage network settings and interactions"
+long = "The 'network' command provides tools to manage network settings, view traffic, and interact with peers in the Bitcoin network."
+
+[commands.network.activate]
+use = "activate"
+short = "Activate the network"
+long = "The 'activate' subcommand enables network operations, allowing your node to interact with peers and the blockchain."
+
+[commands.network.deactivate]
+use = "deactivate"
+short = "Deactivate the network"
+long = "The 'deactivate' subcommand disables network operations, stopping interactions with peers and the blockchain."
+
+[commands.network.connections]
+use = "connections"
+short = "List active connections"
+long = "The 'connections' subcommand lists all active connections to other nodes in the Bitcoin network."
+
+[commands.network.traffic]
+use = "traffic"
+short = "Monitor network traffic"
+long = "The 'traffic' subcommand displays detailed information about network traffic, such as data sent and received."
+
+[commands.network.info]
+use = "info"
+short = "Get network information"
+long = "The 'info' subcommand retrieves information about the network, including protocol version, connections, and bandwidth usage."
+
+[commands.network.peers]
+use = "peers"
+short = "List peers in the network"
+long = "The 'peers' subcommand lists all peers currently connected to your node, including details like IP addresses and connection times."
+
+[commands.network.ban]
+use = "ban [ip]"
+short = "Ban a specific IP address"
+long = "The 'ban' subcommand bans a specific IP address from connecting to your node. Use this to prevent problematic peers from interacting with your node."
+
+[commands.network.unban]
+use = "unban [ip]"
+short = "Unban a specific IP address"
+long = "The 'unban' subcommand removes a ban on a specific IP address, allowing it to reconnect to your node."
+
+[commands.network.blacklist]
+use = "blacklist"
+short = "Manage the network blacklist"
+long = "The 'blacklist' subcommand manages the list of IP addresses banned from interacting with your node. Use it to view or modify the blacklist."
