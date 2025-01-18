@@ -828,7 +828,7 @@ func Health() bool {
 // depending on the provided `bantime` and `absolute` fields.
 //
 // Arguments:
-//   - ban.Subnet (string): The IP or subnet to be banned. The subnet can be specified
+//   - ban.Target (string): The IP or subnet to be banned. The subnet can be specified
 //     as an IP address (e.g., "192.168.0.6") or a network with a subnet mask (e.g., "192.168.0.0/24").
 //   - ban.Time (int): The duration (in seconds) for which the IP/subnet is banned. A value of 0
 //     means to use the default ban time of 24 hours. If `Absolute` is set to true, this field should
@@ -865,18 +865,18 @@ func Health() bool {
 //	null
 //
 // Notes:
-//   - A subnet can be specified in the form of an IP address with a subnet mask (e.g., "192.168.0.0/24").
+//   - A target can be specified in the form of an IP address with a subnet mask (e.g., "192.168.0.0/24").
 //   - If `bantime` is set to 0, the default ban time of 24 hours will be used, unless overridden by
 //     the `-bantime` argument during startup.
 //   - If `absolute` is set to true, the `bantime` should be a UNIX timestamp indicating the absolute
 //     time the ban should end.
 func SetBan(ban Ban) error {
-	if ban.Subnet == "" {
+	if ban.Target == "" {
 		return failure.Of("ban's subnet must be provided")
 	}
 
 	params := rpc.Params{
-		ban.Subnet,
+		ban.Target,
 		"add",
 		ban.Time,
 		ban.Absolute,
